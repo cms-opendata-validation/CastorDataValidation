@@ -4,7 +4,7 @@ on:
 jobs:
   job1:
     runs-on: ubuntu-latest
-    name: argo workflow on minikube with output
+    name: CASTOR argo workflow test on minikube
     steps:
     - uses: actions/checkout@v2
     - name: Start minikube

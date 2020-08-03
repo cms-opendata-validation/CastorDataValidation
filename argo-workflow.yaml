@@ -11,6 +11,7 @@ spec:
         type: DirectoryOrCreate
   templates:
   - name: castor-argo
+  # the order and inputs to the different steps:
     dag:
       tasks:
       - name: step1-data
@@ -36,7 +37,8 @@ spec:
           parameters:
           - name: config
             value: "drawValidationPlots_Commissioning10.py"
-        
+
+  # analysis step definition      
   - name: castor-step1
     inputs:
       parameters:
@@ -65,6 +67,7 @@ spec:
       - name: workdir
         mountPath: /mnt/vol
         
+  # plotting step definition        
   - name: castor-step2
     inputs:
       parameters:

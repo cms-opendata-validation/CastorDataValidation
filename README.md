@@ -4,7 +4,7 @@
 
 This repository contains code that needs to be used to properly read out CASTOR OpenData of Commissioning10, Run2010A, and Run2010B datasets. It includes two EDAnalyzer plugins that are created to correctly read the reconstructed CASTOR data objects and make validation plots. The needed python configuration files are also included, as well as a plotting script + ROOT files to check the output histograms.
 
-This repository containes also [a github action](.github/workflows/main.yml), which runs the test workflow on the CMS open data container using github free resources. It sets up a minikube environment and runs a workflow defined with argo workflow engine. The ouput is returned as a github artifcat. The workflow is triggered by a pull request. The number of events can be modified in [argo-workflow.yaml](argo-workflow.yaml). 
+This repository containes also [a github action](.github/workflows/main.yml), which runs the test workflow on the CMS open data container using github free resources. It sets up a minikube environment and runs a workflow defined with argo workflow engine. The ouput is returned as a github artifcat. The workflow is triggered by a pull request. The number of events can be modified in [argo-workflow.yaml](argo-workflow.yaml).  
 
 ## Requirements
 
