@@ -1,0 +1,95 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: castor-argo-
+spec:
+  entrypoint: castor-argo
+  volumes:
+    - name: workdir
+      hostPath:
+        path: /mnt/data
+        type: DirectoryOrCreate
+  templates:
+  - name: castor-argo
+  # the order and inputs to the different steps:
+    dag:
+      tasks:
+      - name: step1-data
+        template: castor-step1
+        arguments:
+          parameters:
+          - name: config
+            value: "analyzer_cfg_Commissioning10.py"
+          - name: dir
+            value: "Commissioning10Analyzer"
+      - name: step1-mc
+        template: castor-step1
+        arguments:
+          parameters:
+          - name: config
+            value: "analyzer_cfg_Comm10MC.py"
+          - name: dir
+            value: "Commissioning10Analyzer"
+      - name: step2-plot
+        dependencies: [step1-mc, step1-data]
+        template: castor-step2
+        arguments:
+          parameters:
+          - name: config
+            value: "drawValidationPlots_Commissioning10.py"
+
+  # analysis step definition      
+  - name: castor-step1
+    inputs:
+      parameters:
+      - name: config 
+      - name: dir
+    script:
+      image: gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1
+      command: [sh]
+      source: |
+        sudo chown $USER /mnt/vol
+        source /opt/cms/entrypoint.sh
+        git clone  git://github.com/cms-legacydata-validation/CastorDataValidation.git
+        mv CastorDataValidation/CMSSW_additional_packages.tar .
+        tar -xvf CMSSW_additional_packages.tar
+        scram b
+        cd CastorDataValidation/{{inputs.parameters.dir}}/
+        nev=10000
+        eventline=$(grep maxEvents {{inputs.parameters.config}})
+        sed -i "s/$eventline/process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32($nev) )/g" {{inputs.parameters.config}}
+        #comment the connection to the condition database on cvmfs, the condition data is read differently in the container
+        sed -i "s/process.GlobalTag.connect/\#process.GlobalTag.connect/g" {{inputs.parameters.config}}
+        cmsRun {{inputs.parameters.config}}
+        ls -l
+        cp CASTOR*.root /mnt/vol
+      volumeMounts:
+      - name: workdir
+        mountPath: /mnt/vol
+        
+  # plotting step definition        
+  - name: castor-step2
+    inputs:
+      parameters:
+      - name: config 
+    script:
+      image: gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1
+      command: [sh]
+      source: |
+        sudo chown $USER /mnt/vol
+        source /opt/cms/entrypoint.sh
+        git clone  git://github.com/cms-legacydata-validation/CastorDataValidation.git
+        mv CastorDataValidation/CMSSW_additional_packages.tar .
+        tar -xvf CMSSW_additional_packages.tar
+        scram b
+        cd CastorDataValidation/Plots/
+        mv /mnt/vol/CASTOR*.root .
+        sed -i "s/preventExit()/\#preventExit()/g" {{inputs.parameters.config}}
+        python {{inputs.parameters.config}}
+        ls -l *.pdf
+        mv *.pdf /mnt/vol
+      volumeMounts:
+      - name: workdir
+        mountPath: /mnt/vol
+        
+    
