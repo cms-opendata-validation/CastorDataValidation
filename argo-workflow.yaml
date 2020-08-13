@@ -45,7 +45,7 @@ spec:
       - name: config 
       - name: dir
     script:
-      image: gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1
+      image: cmsopendata/cmssw_4_2_8_lowpupatch1
       command: [sh]
       source: |
         sudo chown $USER /mnt/vol
@@ -73,7 +73,7 @@ spec:
       parameters:
       - name: config 
     script:
-      image: gitlab-registry.cern.ch/clange/cmssw-docker/cmssw_4_2_8_lowpupatch1
+      image: cmsopendata/cmssw_4_2_8_lowpupatch1
       command: [sh]
       source: |
         sudo chown $USER /mnt/vol
