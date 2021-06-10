@@ -1,4 +1,4 @@
-name: Test run on minikube 
+name: Test run on minikube  
 on:
   - pull_request
 jobs:
