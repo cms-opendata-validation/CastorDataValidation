@@ -19,12 +19,13 @@ First install the correct version of CMSSW and activate it:
     cd CMSSW_4_2_8_lowpupatch1/src
     cmsenv
 
-Second, download this repository:
+Second, for the git commands to work, open the "Outer shell" from the icon at the bottom of the desktop. Download this repository:
 
-    git clone git://github.com/cms-legacydata-validation/CastorDataValidation.git
+    cd CMSSW_4_2_8_lowpupatch1
+    git clone https://github.com/cms-legacydata-validation/CastorDataValidation.git
 
 
-Then move and unpack the needed additional packages by doing the following:
+Then, go back to the "CMS Shell" and move and unpack the needed additional packages by doing the following:
 
     mv CastorDataValidation/CMSSW_additional_packages.tar .
     tar -xvf CMSSW_additional_packages.tar
